@@ -21,35 +21,40 @@ function App() {
         setList(updatedList);
     };
 
-    const markAsDone = (todoId) => {
-        const newList = [...list].map(el => {
-            if (el.id === todoId) return {...el, done: true}
-            return el;
-        })
-        setList(newList);
-    };
-
-    const unMark = (todoId) => {
-        const newList = [...list].map(el => {
-            if (el.id === todoId) return {...el, done: false}
-            return el;
-        })
-        setList(newList);
-    };
-
-    const remove = (todoId) => {
+    const toggleDone = (todoId) => {
+        const newList = list.map(el => {
+                    if (el.id === todoId) return {...el, done: !el.done}
+                    return el;
+                })
+                setList(newList);
+    }
+    const onDelete = (todoId) => {
         const newList = [...list].filter(el => el.id !== todoId);
         setList(newList);
     };
 
-    const todoUpdate = (todoId, newTodo) => {
-        const updatedList = [...list].map(el => {
+    const edit = (todoId, newTodo) => {
+        const updatedList = list.map(el => {
             if (el.id === todoId) return {...el, title: newTodo}
             return el;
         })
         setList(updatedList);
     };
 
+    const move = (todoId, direction) => {
+        const firstIndex = list.findIndex(el => el.id === todoId);
+        const secondIndex = firstIndex + direction;
+         if(secondIndex < 0 || secondIndex > list.length -1) {
+             console.warn("CAN'T MOVE! INDEX UOT OF RANGE");
+         } else {
+           const newList = [...list]
+           const temp = newList[firstIndex];              //ниже за коммент строчка - это реструктуризация этих трех строк
+           newList[firstIndex] = newList[secondIndex];   //ниже за коммент строчка - это реструктуризация этих трех строк
+           newList[secondIndex] = temp;                 //ниже за коммент строчка - это реструктуризация этих трех строк
+           // [newList[firstIndex], newList[secondIndex]] = [newList[secondIndex], newList[firstIndex]];
+           setList(newList);
+         }
+    };
 
     return (
 
@@ -59,10 +64,10 @@ function App() {
             <TodoCreateForm create={create}/>
 
             <TodoList list={list}
-                      markAsDone={markAsDone}
-                      unMark={unMark}
-                      remove={remove}
-                      todoUpdate={todoUpdate}/>
+                      toggleDone={toggleDone}
+                      onDelete={onDelete}
+                      edit={edit}
+                      move={move}/>
 
         </div>
     );

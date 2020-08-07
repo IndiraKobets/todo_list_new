@@ -17,81 +17,69 @@ const pencil = (<svg className="bi bi-pencil" width="1em" height="1em" viewBox="
           d="M12.146 6.354l-2.5-2.5.708-.708 2.5 2.5-.707.708zM3 10v.5a.5.5 0 0 0 .5.5H4v.5a.5.5 0 0 0 .5.5H5v.5a.5.5 0 0 0 .5.5H6v-1.5a.5.5 0 0 0-.5-.5H5v-.5a.5.5 0 0 0-.5-.5H3z"/>
 </svg>)
 
-const check = (<svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-check-square" fill="currentColor"
-                    xmlns="http://www.w3.org/2000/svg">
-    <path fillRule="evenodd"
-          d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
-    <path fillRule="evenodd"
-          d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-</svg>)
-
-const uncheck = (<svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-square" fill="currentColor"
-                      xmlns="http://www.w3.org/2000/svg">
-    <path fillRule="evenodd"
-          d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
-</svg>)
 
 function TodoListItem(props) {
 
 
-    const {todo, markAsDone, unMark, remove, todoUpdate} = props;
+    const {id, title, done, toggleDone, onDelete, edit, move} = props;
 
-    const isTodoDone = todo.done;
-    const todoTitle = todo.title; // можем мы это написать props.todo.title
-    const todoId = todo.id
-    const titleStyle = isTodoDone === true ? {
-        textDecoration: "line-through",
-        listStyleType: "none"
-    } : {listStyleType: "none"};
+    const titleStyle = done ? {textDecoration: "line-through", listStyleType: "none"} : {listStyleType: "none"};
 
     const [isEditMode, setIsEditMode] = useState(false);
-    const [newTodo, setNewTodo] = useState(todoTitle);
+    const [updateTodo, setUpdateTodo] = useState(title);
 
     const inputHandler = (e) => {
-        setNewTodo(e.target.value)
+        setUpdateTodo(e.target.value)
     };
 
     const saveButtonHandler = () => {
-        todoUpdate(todoId, newTodo);
+        edit(id, updateTodo);
         setIsEditMode(false);
     };
+
+    // if(isEditMode) {
+    //     return (<div>
+    //         <input value={newTodo} onChange={inputHandler}/>
+    //         <button className="btn btn-outline-success ml-2 mt-2" onClick={saveButtonHandler}>Save</button>
+    //     </div>
+    //     );
+    // } else {
+    //     return (<div>
+    //                <span className="title" style={titleStyle}>
+    //                  {todoTitle}
+    //                </span>
+    //             <button className="btn btn-outline-success ml-2 mt-2" onClick={() => toggleDone(todoId)}>
+    //                 {isTodoDone ? 'Undone' : 'Done'}
+    //             </button>
+    //             <button className="btn btn-outline-warning ml-3 mt-2"
+    //                     onClick={() => setIsEditMode(true)}>{pencil}</button>
+    //             <button className="btn btn-outline-danger ml-2 mt-2" onClick={() => onDelete(todoId)}>{trash}</button>
+    //         </div>
+    //     );
+    // }
+    // }
 
     return (
         <div className="form-group">
             {isEditMode ? (
-                    <div>
-                        <input value={newTodo} onChange={inputHandler}/>
-                        <button className="btn btn-outline-success ml-2 mt-2" onClick={saveButtonHandler}>Save</button>
-                    </div>
-                )
-
-                :
-
-                (
-                    <div className="form-group">
-                        {isTodoDone
-                            ?
-                            (
-                                <li className="form-group" style={titleStyle} >
-                                    {todoTitle}
-                                    <button className="btn btn-outline-success ml-2 mt-2" onClick={() => unMark(todoId)}>{check}</button>
-
-                                    <button className="btn btn-outline-warning ml-3 mt-2" onClick={() => setIsEditMode(true)}>{pencil}</button>
-                                    <button className="btn btn-outline-danger ml-2 mt-2" onClick={() => remove(todoId)}>{trash}</button>
-                                </li>
-                            )
-                            :
-                            (<li className="form-group" style={titleStyle}>
-                                {todoTitle}
-                                <button className="btn btn-outline-success ml-2 mt-2" onClick={() => markAsDone(todoId)}>{uncheck}</button>
-
-                                <button className="btn btn-outline-warning ml-2 mt-2" onClick={() => setIsEditMode(true)}>{pencil}</button>
-                                <button className="btn btn-outline-danger ml-2 mt-2" onClick={() => remove(todoId)}>{trash}</button>
-                            </li>)
-                        }
-                    </div>
-                )}
-
+                <div>
+                    <input value={updateTodo} onChange={inputHandler}/>
+                    <button className="btn btn-outline-success ml-2 mt-2" onClick={saveButtonHandler}>Save</button>
+                </div>
+            ) : (
+                <div>
+                   <span className="title" style={titleStyle}>
+                     {title}
+                   </span>
+                    <button className="btn btn-outline-success ml-2 mt-2" onClick={() => toggleDone(id)}>
+                        {done ? 'Undone' : 'Done'}
+                    </button>
+                    <button className="btn btn-outline-warning ml-3 mt-2" onClick={() => setIsEditMode(true)}>{pencil}</button>
+                    <button className="btn btn-outline-danger ml-2 mt-2" onClick={() => onDelete(id)}>{trash}</button>
+                    <button className="btn btn-outline-warning ml-3 mt-2" onClick={() => move (id, -1)}>Up</button>
+                    <button className="btn btn-outline-warning mt-2" onClick={() => move (id, 1)}>Down</button>
+                </div>
+            )}
 
         </div>
 
