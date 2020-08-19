@@ -48,9 +48,9 @@ function App() {
              console.warn("CAN'T MOVE! INDEX UOT OF RANGE");
          } else {
            const newList = [...list]
-           const temp = newList[firstIndex];              //ниже за коммент строчка - это реструктуризация этих трех строк
-           newList[firstIndex] = newList[secondIndex];   //ниже за коммент строчка - это реструктуризация этих трех строк
-           newList[secondIndex] = temp;                 //ниже за коммент строчка - это реструктуризация этих трех строк
+           const temp = newList[firstIndex];              //ниже закоммент. строчка - это реструктуризация этих трех строк
+           newList[firstIndex] = newList[secondIndex];   //ниже закоммент. строчка - это реструктуризация этих трех строк
+           newList[secondIndex] = temp;                 //ниже закоммент. строчка - это реструктуризация этих трех строк
            // [newList[firstIndex], newList[secondIndex]] = [newList[secondIndex], newList[firstIndex]];
            setList(newList);
          }
